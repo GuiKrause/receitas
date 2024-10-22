@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cartao from "../Cartao";
 
 export default function CardList() {
@@ -11,9 +11,28 @@ export default function CardList() {
         { id: 4, titulo: "Pão com ovo", tempo: 10, serve: 1 },
     ])
 
+    useEffect(() => {
+
+        const bearerToken = process.env.NEXT_PUBLIC_API_TOKEN; 
+
+        async function getData() {
+            fetch('', {
+                method: 'GET',
+                headers: {
+                    'Autorization': `Bearer ${bearerToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(response => setCards(response.data))
+            .catch(error => console.log(error));
+        }
+        getData();
+    }, [])
+
     return(
         <div className="flex flex-wrap w-full justify-center">
-            {cards.map((e) => <Cartao props={e} />)}
+            {cards.map((e) => <Cartao key={e.id} props={e} />)}
         </div>
     );
 }
